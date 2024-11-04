@@ -54,6 +54,7 @@ app.get("/janken", (req, res) => {
   }else{
     judgement = "負け";
   }
+
   
   total += 1;
   const display = {
