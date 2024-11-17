@@ -51,12 +51,10 @@ loose --> end1
 ```mermaid
 flowchart TD;
 
-start["開始"];
-end["終了"]
-number{"数字1と数字2を受け取る"}
-conversion{"数字1と数字2が数字でない場合は0に置き換える"}
-add{"数字1と数字2を足す"}
-result{"計算結果を表示"}
+A["数字1と数字2を受け取る"]
+B["数字1と数字2が数字でない場合は0に置き換える"];
+C["数字1と数字2を足す"];
+D["計算結果を表示"];
 
 start --> number
 number --> conversion
