@@ -18,7 +18,7 @@ console.log( 'Hello' );
 ## 使用方法
 ｛jankenの場合｝
 ・```app5.js``` を起動する
-・Webブラウザでlocalhost:8080/public/jankenにアクセスする
+・Webブラウザでlocalhost:8080/public/janken.htmlにアクセスする
 ・自分の手を入力する
 
 ```mermaid
