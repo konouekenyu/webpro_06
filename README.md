@@ -53,10 +53,10 @@ flowchart TD;
 
 start["開始"];
 end["終了"]
-number["数字1と数字2を受け取る"]
-conversion["数字1と数字2が数字でない場合は0に置き換える"]
-add["数字1と数字2を足す"]
-result["計算結果を表示"]
+number{"数字1と数字2を受け取る"}
+conversion{"数字1と数字2が数字でない場合は0に置き換える"}
+add{"数字1と数字2を足す"}
+result{"計算結果を表示"}
 
 start --> number
 number --> conversion
