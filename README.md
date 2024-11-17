@@ -57,9 +57,9 @@ C["数字1と数字2を足す"];
 D["計算結果を表示"];
 
 start --> number
-A --> conversion
-B --> add
-C --> result
+A --> B
+B --> C
+C --> D
 D --> end
 ```
 
