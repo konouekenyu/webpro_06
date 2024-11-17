@@ -57,10 +57,10 @@ C["数字1と数字2を足す"];
 D["計算結果を表示"];
 
 start --> number
-number --> conversion
-conversion --> add
-add --> result
-result --> end
+A --> conversion
+B --> add
+C --> result
+D --> end
 ```
 
 
