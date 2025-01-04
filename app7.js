@@ -4,6 +4,7 @@ const app = express();
 
 let bbs = [];  // 本来はDBMSを使用するが，今回はこの変数にデータを蓄える
 
+
 app.set('view engine', 'ejs');
 app.use("/public", express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
@@ -104,5 +105,41 @@ app.post("/post", (req, res) => {
   bbs.push( { name: name, message: message } );//配列を追加　nameとmessageがたくさん入っている
   res.json( {number: bbs.length } );//全投稿件数を表示
 });
+
+
+// 1. いいね機能の追加
+app.post("/like", (req, res) => {
+    const postId = Number(req.body.id); // 投稿IDを受け取る
+    if (bbs[postId]) {
+        bbs[postId].likes = (bbs[postId].likes || 0) + 1;
+        res.json({ likes: bbs[postId].likes });
+    } else {
+        res.status(404).send("Post not found");
+    }
+});
+
+// 2. 投稿削除機能の追加
+app.post("/delete", (req, res) => {
+    const postId = Number(req.body.id); // 投稿IDを受け取る
+    if (bbs[postId]) {
+        bbs.splice(postId, 1); // 投稿を削除
+        res.json({ message: "Post deleted" });
+    } else {
+        res.status(404).send("Post not found");
+    }
+});
+
+// 3. 投稿編集機能の追加
+app.post("/edit", (req, res) => {
+    const postId = Number(req.body.id);
+    const newMessage = req.body.message;
+    if (bbs[postId]) {
+        bbs[postId].message = newMessage;
+        res.json({ message: "Post updated", newMessage: newMessage });
+    } else {
+        res.status(404).send("Post not found");
+    }
+});
+
 
 app.listen(8080, () => console.log("Example app listening on port 8080!"));

@@ -1,88 +1,127 @@
 "use strict";
 
-let number=0;  //投稿件数をいくつ読んだか
+let number = 0;  // 投稿件数をいくつ読んだか
 const bbs = document.querySelector('#bbs');
+
+// 1. いいね機能の追加
 document.querySelector('#post').addEventListener('click', () => {
-    const name = document.querySelector('#name').value;  //投稿者の名前
-    const message = document.querySelector('#message').value;  //投稿内容
+    const name = document.querySelector('#name').value;  // 投稿者の名前
+    const message = document.querySelector('#message').value;  // 投稿内容
 
     const params = {  // URL Encode
         method: "POST",
-        body:  'name='+name+'&message='+message,  //名前と投稿内容　＆はパラメータが変わるためにある
+        body:  'name=' + name + '&message=' + message,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-    console.log( params );
     const url = "/post";
-    fetch( url, params )
-    .then( (response) => {  //fetchが上手くいったら20行目から実行する．だめなときはエラーが出る
-        if( !response.ok ) {
+    fetch(url, params)
+    .then((response) => {
+        if (!response.ok) {
             throw new Error('Error');
         }
         return response.json();
     })
-    .then( (response) => {
-        console.log( response );
-        document.querySelector('#message').value = ""; //投稿内容が来ているか確認するためにあえて消している
+    .then((response) => {
+        document.querySelector('#message').value = ""; // 投稿内容が来ているか確認するためにあえて消している
+
     });
 });
 
-document.querySelector('#check').addEventListener('click', () => { //もし新しい投稿があったら持ってくる
-    const params = {  // URL Encode
+document.querySelector('#checkButton').addEventListener('click', () => {
+    loadPosts();  // 投稿チェックボタンが押されたときにのみ投稿を更新
+});
+
+// 投稿の表示部分の追加
+function loadPosts() {
+    const params = {
         method: "POST",
-        body:  '',
+        body: '',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-    const url = "/check";
-    fetch( url, params )
-    .then( (response) => {
-        if( !response.ok ) {
+    const url = "/read";
+    fetch(url, params)
+    .then((response) => {
+        if (!response.ok) {
             throw new Error('Error');
         }
         return response.json();
     })
-    .then( (response) => {
-        let value = response.number;
-        console.log( value );
+    .then((response) => {
+        bbs.innerHTML = '';  // 既存の投稿を消去
+        number += response.messages.length;
+        response.messages.forEach((post, index) => {
+            let cover = document.createElement('div');
+            cover.className = 'cover';
+            let name_area = document.createElement('span');
+            name_area.className = 'name';
+            name_area.innerText = post.name;
+            let mes_area = document.createElement('span');
+            mes_area.className = 'mes';
+            mes_area.innerText = post.message;
+            cover.appendChild(name_area);
+            cover.appendChild(mes_area);
 
-        console.log( number );
-        if( number != value ) {
-            const params = {
-                method: "POST",
-                body: 'start='+number,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'               
-                }
-            }
-            const url = "/read";
-            fetch( url, params )
-            .then( (response) => {
-                if( !response.ok ) {
-                    throw new Error('Error');
-                }
-                return response.json();
-            })
-            .then( (response) => { //投稿が来たら表示する部分
-                number += response.messages.length;
-                for( let mes of response.messages ) {
-                    console.log( mes );  // 表示する投稿
-                    let cover = document.createElement('div');
-                    cover.className = 'cover';
-                    let name_area = document.createElement('span');
-                    name_area.className = 'name';
-                    name_area.innerText = mes.name;
-                    let mes_area = document.createElement('span');
-                    mes_area.className = 'mes';
-                    mes_area.innerText = mes.message;
-                    cover.appendChild( name_area ); //coverの中にname_areaをくっつける
-                    cover.appendChild( mes_area ); //coverの中にmes_areaをくっつける
+            // いいねボタンの追加
+            const likeButton = document.createElement('button');
+            likeButton.innerText = `いいね (${post.likes || 0})`;
+            likeButton.addEventListener('click', () => {
+                fetch('/like', {
+                    method: 'POST',
+                    body: `id=${index}`,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    likeButton.innerText = `いいね (${data.likes})`;
+                });
+            });
 
-                    bbs.appendChild( cover );
+            cover.appendChild(likeButton);
+
+            // 削除ボタンの追加
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = '削除';
+            deleteButton.addEventListener('click', () => {
+                fetch('/delete', {
+                    method: 'POST',
+                    body: `id=${index}`,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    loadPosts();  // 投稿削除後、再度投稿をロード
+                });
+            });
+
+            cover.appendChild(deleteButton);
+
+            // 編集ボタンの追加
+            const editButton = document.createElement('button');
+            editButton.innerText = '編集';
+            editButton.addEventListener('click', () => {
+                const newMessage = prompt('新しいメッセージを入力してください', post.message);
+                if (newMessage) {
+                    fetch('/edit', {
+                        method: 'POST',
+                        body: `id=${index}&message=${newMessage}`,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        loadPosts();  // 投稿編集後、再度投稿をロード
+                    });
                 }
-            })
-        }
+            });
+
+            cover.appendChild(editButton);
+
+            bbs.appendChild(cover);
+        });
     });
-});
+}
+
+
