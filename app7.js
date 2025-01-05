@@ -107,7 +107,7 @@ app.post("/post", (req, res) => {
 });
 
 
-// 1. いいね機能の追加
+
 app.post("/like", (req, res) => {
     const postId = Number(req.body.id); // 投稿IDを受け取る
     if (bbs[postId]) {
@@ -118,7 +118,7 @@ app.post("/like", (req, res) => {
     }
 });
 
-// 2. 投稿削除機能の追加
+
 app.post("/delete", (req, res) => {
     const postId = Number(req.body.id); // 投稿IDを受け取る
     if (bbs[postId]) {
@@ -129,7 +129,7 @@ app.post("/delete", (req, res) => {
     }
 });
 
-// 3. 投稿編集機能の追加
+
 app.post("/edit", (req, res) => {
     const postId = Number(req.body.id);
     const newMessage = req.body.message;

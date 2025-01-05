@@ -65,8 +65,7 @@ function loadPosts() {
             cover.appendChild(name_area);
             cover.appendChild(mes_area);
 
-            // いいねボタンの追加
-            const likeButton = document.createElement('button');
+            const likeButton = document.createElement('button');// いいねボタン
             likeButton.innerText = `いいね (${post.likes || 0})`;
             likeButton.addEventListener('click', () => {
                 fetch('/like', {
@@ -82,8 +81,7 @@ function loadPosts() {
 
             cover.appendChild(likeButton);
 
-            // 削除ボタンの追加
-            const deleteButton = document.createElement('button');
+            const deleteButton = document.createElement('button');// 削除ボタン
             deleteButton.innerText = '削除';
             deleteButton.addEventListener('click', () => {
                 fetch('/delete', {
@@ -99,8 +97,7 @@ function loadPosts() {
 
             cover.appendChild(deleteButton);
 
-            // 編集ボタンの追加
-            const editButton = document.createElement('button');
+            const editButton = document.createElement('button');// 編集ボタン
             editButton.innerText = '編集';
             editButton.addEventListener('click', () => {
                 const newMessage = prompt('新しいメッセージを入力してください', post.message);
