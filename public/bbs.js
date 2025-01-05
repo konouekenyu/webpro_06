@@ -3,7 +3,7 @@
 let number = 0;  // 投稿件数をいくつ読んだか
 const bbs = document.querySelector('#bbs');
 
-// 1. いいね機能の追加
+
 document.querySelector('#post').addEventListener('click', () => {
     const name = document.querySelector('#name').value;  // 投稿者の名前
     const message = document.querySelector('#message').value;  // 投稿内容
@@ -33,7 +33,7 @@ document.querySelector('#checkButton').addEventListener('click', () => {
     loadPosts();  // 投稿チェックボタンが押されたときにのみ投稿を更新
 });
 
-// 投稿の表示部分の追加
+
 function loadPosts() {
     const params = {
         method: "POST",
